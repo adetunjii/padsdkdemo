@@ -47,7 +47,9 @@ public class UserService {
             throw new UnauthorisedAccessException("Invalid Credentials");
         }
 
-        return getUserEntity(response.getBody());
+        user = getUserEntity(response.getBody());
+
+        return user;
     }
 
     public static User createUser(Map<String, Object> parameters) throws NoSuchFieldException, UnirestException{
@@ -68,13 +70,14 @@ public class UserService {
 
         HttpResponse<JsonNode> response = HttpRequestUtil.makePostRequest(url, parameters, headers());
 
-        return getUserEntity(response.getBody());
+        user = getUserEntity(response.getBody());
 
+        return user;
     }
 
-    public static User fetchUserDetails() throws UnirestException{
+    public static User fetchUserDetails(String userId) throws UnirestException{
 
-        String url = baseUrl + "/users/" + user.getUserId();
+        String url = baseUrl + "/users/" + userId;
 
         HttpResponse<JsonNode> response = HttpRequestUtil.makeGetRequest(url, headers());
 
@@ -100,7 +103,9 @@ public class UserService {
 
         Map<String, Object> userMap = result.getBody().get("auth", HashMap.class);
 
-        return getUserEntity(userMap);
+        user = getUserEntity(userMap);
+
+        return user;
     }
 
     private static User getUserEntity(Map<String, Object> userMap){
@@ -141,6 +146,8 @@ public class UserService {
             jsonObject = jsonObject.getJSONObject("user");
         }
 
+        User user = new User();
+
         user.setId(jsonObject.getString("id"));
         user.setClientId(jsonObject.getString("clientId"));
         user.setUserId(jsonObject.getString("userId"));
@@ -162,8 +169,6 @@ public class UserService {
 
         HashMap<String, Object> meta = new Gson().fromJson(jsonObject.getJSONObject("meta").toString(), HashMap.class);
 
-        logger.info("Meta Size: " + meta.keySet().size());
-
         user.setMeta(meta);
 
         return user;
@@ -172,14 +177,16 @@ public class UserService {
     public static User getUser() {
 
         try {
-            if(user == null || user.getRoleName() == null){
-                fetchUserDetails();
+            if(user == null){
+                getUserEntity();
             }
+
+            return user.getRoleName() == null ? fetchUserDetails(user.getUserId()) : user;
         }catch (UnirestException ex){
             throw new UnauthorisedAccessException("Could not fetch user details");
         }
 
-        return user;
+
     }
 
     public static boolean isUserValid() {
@@ -205,7 +212,7 @@ public class UserService {
         }
     }
 
-    private static Map<String, String> headers(){
+    static Map<String, String> headers(){
 
         Map<String, String> headers = new HashMap<String, String>();
 

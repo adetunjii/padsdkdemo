@@ -29,6 +29,17 @@ public class HttpRequestUtil {
 
     }
 
+    public static HttpResponse<String> makeFormPostRequest(String url, Map<String, Object> params, Map<String, String> headers)
+            throws UnirestException {
+
+        return Unirest.post(url)
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .headers(headers)
+                .fields(params)
+                .asString();
+
+    }
+
     public static HttpResponse<JsonNode> makePutRequest(String url, Map<String, Object> params, Map<String, String> headers)
             throws UnirestException {
 
@@ -55,4 +66,5 @@ public class HttpRequestUtil {
         return request.asJson();
 
     }
+
 }

@@ -6,43 +6,7 @@
 
     <groupId>com.sanimara</groupId>
     <artifactId>pad_java_sdk</artifactId>
-    <version>1.0.0</version>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.12</version>
-                <configuration>
-                    <message>Maven artifacts for ${project.version}</message>  <!-- git commit message -->
-                    <noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
-                    <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
-                    <branch>refs/heads/mvn-repo</branch>                       <!-- remote branch name -->
-                    <includes><include>**/*</include></includes>
-                    <repositoryName>pad_java_sdk</repositoryName>      <!-- github repo name -->
-                    <repositoryOwner>Almighty11</repositoryOwner>    <!-- github username  -->
-                </configuration>
-                <executions>
-                    <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
-                    <execution>
-                        <goals>
-                            <goal>site</goal>
-                        </goals>
-                        <phase>deploy</phase>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <version>1.0.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -93,17 +57,15 @@
 
     <distributionManagement>
         <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/mvn-repo</url>
+            <id>github</id>
+            <name>GitHub Almighty11 Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/almighty11/pad_java_sdk</url>
         </repository>
     </distributionManagement>
 
     <properties>
         <!-- github server corresponds to entry in ~/.m2/settings.xml -->
         <github.global.server>github</github.global.server>
-<!--        <github.global.userName>Almighty11</github.global.userName>-->
-<!--        <github.global.password>5Zft9mvg7qjdQxayksAG</github.global.password>-->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
